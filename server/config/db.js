@@ -1,19 +1,16 @@
-const mongoose = require('mongoose');
-const config = require('config');
-const db = config.get('mongoURI');
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+const uri = process.env.MONGO_URI;
+
+mongoose.connect(uri);
+
+const connection = mongoose.connection;
 
 const connectDB = async () => {
-  try {
-    mongoose.set('strictQuery', true);
-    await mongoose.connect(db, {
-      useNewUrlParser: true,
-    });
-
-    console.log('MongoDB is Connected...');
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
+  connection.once("open", () => {
+    console.log("MongoDB database connection established successfully");
+  });
 };
 
 module.exports = connectDB;
