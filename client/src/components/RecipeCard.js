@@ -9,7 +9,7 @@ export default function RecipeCard(props) {
   return (
     <Card sx={{ maxWidth: 345, m: 1 }}>
       <CardHeader
-        title="Shrimp and Chorizo Paella"
+        title={recipe.title}
         onClick={() => navigate(`/show-recipe/${recipe._id}`)}
       />
       <CardMedia

@@ -4,3 +4,5 @@ client/node_modules
 # SERVER
 server/node_modules
 server/.env
+
+*.http

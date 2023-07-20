@@ -1,35 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getRecipeById, deleteRecipeById } from "api/recipes";
+import { CircularProgress, Box } from "@mui/material";
 
 function ShowRecipeDetails() {
   const [recipe, setRecipe] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8082/api/recipes/${id}`)
-      .then((res) => {
-        setRecipe(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log("Error from ShowRecipeDetails");
-      });
+    (async () => {
+      const getRecipe = await getRecipeById(id);
+      setRecipe(getRecipe);
+      setLoading(false);
+    })();
   }, [id]);
 
-  const onDeleteClick = (id) => {
-    axios
-      .delete(`http://localhost:8082/api/recipes/${id}`)
-      .then((res) => {
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log("Error form ShowRecipeDetails_deleteClick");
-      });
+  const onDeleteClick = () => {
+    deleteRecipeById(id);
+    navigate("/");
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   const RecipeItem = (
     <div>
@@ -87,7 +87,7 @@ function ShowRecipeDetails() {
               type="button"
               className="btn btn-outline-danger btn-lg btn-block"
               onClick={() => {
-                onDeleteClick(recipe._id);
+                onDeleteClick();
               }}
             >
               Delete Recipe
@@ -95,7 +95,7 @@ function ShowRecipeDetails() {
           </div>
           <div className="col-md-6 m-auto">
             <Link
-              to={`/edit-recipe/${recipe._id}`}
+              to={`/edit-recipe/${id}`}
               className="btn btn-outline-info btn-lg btn-block"
             >
               Edit Recipe

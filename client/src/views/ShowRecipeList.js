@@ -9,7 +9,7 @@ function ShowRecipeList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8082/api/recipes")
+      .get("http://localhost:8080/api/recipes")
       .then((res) => {
         setRecipes(res.data);
       })

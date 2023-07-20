@@ -1,34 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { getRecipeById, updateRecipeById } from "api/recipes";
 
-function UpdateRecipeInfo() {
+const UpdateRecipe = () => {
   const [recipe, setRecipe] = useState({
-    title: '',
-    author: '',
-    description: '',
-    published_date: '',
-    publisher: '',
+    title: "",
+    author: "",
+    description: "",
+    published_date: "",
+    publisher: "",
   });
 
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8082/api/recipes/${id}`)
-      .then((res) => {
-        setRecipe({
-          title: res.data.title,
-          author: res.data.author,
-          description: res.data.description,
-          published_date: res.data.published_date,
-          publisher: res.data.publisher,
-        });
-      })
-      .catch((err) => {
-        console.log('Error from UpdateRecipeInfo');
-      });
+    (async () => {
+      const getRecipe = await getRecipeById(id);
+      setRecipe(getRecipe);
+    })();
   }, [id]);
 
   const onChange = (e) => {
@@ -37,102 +27,87 @@ function UpdateRecipeInfo() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    const data = {
-      title: recipe.title,
-      author: recipe.author,
-      description: recipe.description,
-      published_date: recipe.published_date,
-      publisher: recipe.publisher,
-    };
-
-    axios
-      .put(`http://localhost:8082/api/recipes/${id}`, data)
-      .then(() => {
-        navigate(`/show-recipe/${id}`);
-      })
-      .catch((err) => {
-        console.log('Error in UpdateRecipeInfo!', err);
-      });
+    updateRecipeById(id, recipe);
+    navigate("/");
   };
 
   return (
-    <div className='UpdateRecipeInfo'>
-      <div className='container'>
-        <div className='row'>
-          <div className='col-md-8 m-auto'>
+    <div className="UpdateRecipeInfo">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-8 m-auto">
             <br />
-            <Link to='/' className='btn btn-outline-warning float-left'>
+            <Link to="/" className="btn btn-outline-warning float-left">
               Show Recipe List
             </Link>
           </div>
-          <div className='col-md-8 m-auto'>
-            <h1 className='display-4 text-center'>Edit Recipe</h1>
-            <p className='lead text-center'>Update Recipe's Info</p>
+          <div className="col-md-8 m-auto">
+            <h1 className="display-4 text-center">Edit Recipe</h1>
+            <p className="lead text-center">Update Recipe's Info</p>
           </div>
         </div>
 
-        <div className='col-md-8 m-auto'>
+        <div className="col-md-8 m-auto">
           <form noValidate onSubmit={onSubmit}>
-            <div className='form-group'>
-              <label htmlFor='title'>Title</label>
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
               <input
-                type='text'
-                placeholder='Title of the Recipe'
-                name='title'
-                className='form-control'
+                type="text"
+                placeholder="Title of the Recipe"
+                name="title"
+                className="form-control"
                 value={recipe.title}
                 onChange={onChange}
               />
             </div>
             <br />
 
-            <div className='form-group'>
-              <label htmlFor='author'>Author</label>
+            <div className="form-group">
+              <label htmlFor="author">Author</label>
               <input
-                type='text'
-                placeholder='Author'
-                name='author'
-                className='form-control'
+                type="text"
+                placeholder="Author"
+                name="author"
+                className="form-control"
                 value={recipe.author}
                 onChange={onChange}
               />
             </div>
             <br />
 
-            <div className='form-group'>
-              <label htmlFor='description'>Description</label>
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
               <textarea
-                type='text'
-                placeholder='Description of the Recipe'
-                name='description'
-                className='form-control'
+                type="text"
+                placeholder="Description of the Recipe"
+                name="description"
+                className="form-control"
                 value={recipe.description}
                 onChange={onChange}
               />
             </div>
             <br />
 
-            <div className='form-group'>
-              <label htmlFor='published_date'>Published Date</label>
+            <div className="form-group">
+              <label htmlFor="published_date">Published Date</label>
               <input
-                type='text'
-                placeholder='Published Date'
-                name='published_date'
-                className='form-control'
+                type="text"
+                placeholder="Published Date"
+                name="published_date"
+                className="form-control"
                 value={recipe.published_date}
                 onChange={onChange}
               />
             </div>
             <br />
 
-            <div className='form-group'>
-              <label htmlFor='publisher'>Publisher</label>
+            <div className="form-group">
+              <label htmlFor="publisher">Publisher</label>
               <input
-                type='text'
-                placeholder='Publisher of the Recipe'
-                name='publisher'
-                className='form-control'
+                type="text"
+                placeholder="Publisher of the Recipe"
+                name="publisher"
+                className="form-control"
                 value={recipe.publisher}
                 onChange={onChange}
               />
@@ -140,8 +115,8 @@ function UpdateRecipeInfo() {
             <br />
 
             <button
-              type='submit'
-              className='btn btn-outline-info btn-lg btn-block'
+              type="submit"
+              className="btn btn-outline-info btn-lg btn-block"
             >
               Update Recipe
             </button>
@@ -150,6 +125,6 @@ function UpdateRecipeInfo() {
       </div>
     </div>
   );
-}
+};
 
-export default UpdateRecipeInfo;
+export default UpdateRecipe;
